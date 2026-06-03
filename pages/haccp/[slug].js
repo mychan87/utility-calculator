@@ -2,7 +2,12 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { materials, LANGUAGES } from "../../data/materials";
+
+const ILLUSTRATIONS = {
+  "personal-hygiene": dynamic(() => import("../../components/illustrations/PersonalHygiene"), { ssr: false }),
+};
 
 export async function getStaticPaths() {
   const paths = materials.map((m) => ({ params: { slug: m.slug } }));
@@ -165,8 +170,19 @@ export default function MaterialPage({ material }) {
                 background: "linear-gradient(135deg, #1e40af 0%, #065f46 100%)",
                 padding: "32px",
                 color: "white",
+                position: "relative",
+                overflow: "hidden",
               }}
             >
+              {/* Webtoon illustration */}
+              {ILLUSTRATIONS[material.slug] && (() => {
+                const Illust = ILLUSTRATIONS[material.slug];
+                return (
+                  <div style={{ position: "absolute", right: "24px", bottom: "-8px", opacity: 0.9, pointerEvents: "none" }} className="no-print">
+                    <Illust size={130} />
+                  </div>
+                );
+              })()}
               <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
                 <span
                   style={{
@@ -193,10 +209,10 @@ export default function MaterialPage({ material }) {
                   {LANGUAGES.find((l) => l.code === lang)?.label}
                 </span>
               </div>
-              <h1 style={{ fontSize: "clamp(20px, 4vw, 30px)", fontWeight: "800", lineHeight: 1.3, marginBottom: "10px" }}>
+              <h1 style={{ fontSize: "clamp(20px, 4vw, 30px)", fontWeight: "800", lineHeight: 1.3, marginBottom: "10px", maxWidth: "70%" }}>
                 {material.title[lang] || material.title.ko}
               </h1>
-              <p style={{ fontSize: "15px", opacity: 0.85, lineHeight: 1.6 }}>
+              <p style={{ fontSize: "15px", opacity: 0.85, lineHeight: 1.6, maxWidth: "65%" }}>
                 {material.summary[lang] || material.summary.ko}
               </p>
             </div>

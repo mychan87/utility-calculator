@@ -2,7 +2,12 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { materials, LANGUAGES } from "../../../data/materials";
+
+const ILLUSTRATIONS = {
+  "personal-hygiene": dynamic(() => import("../../../components/illustrations/PersonalHygiene"), { ssr: false }),
+};
 
 export async function getStaticPaths() {
   return {
@@ -40,17 +45,24 @@ function buildSlides(content, title, summary, day) {
 
 // ─── Slide Components (rendered at SLIDE_SIZE × SLIDE_SIZE) ──────────────────
 
-function CoverSlide({ title, summary, day, lang }) {
+function CoverSlide({ title, summary, day, lang, slug }) {
   const l = LANGUAGES.find((x) => x.code === lang);
+  const Illust = ILLUSTRATIONS[slug];
   return (
     <div style={{ width: SLIDE_SIZE, height: SLIDE_SIZE, background: "linear-gradient(145deg,#1e3a8a 0%,#065f46 100%)", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: "52px 48px", boxSizing: "border-box", position: "relative", overflow: "hidden", fontFamily: "system-ui,sans-serif" }}>
       <div style={{ position: "absolute", top: -70, right: -70, width: 240, height: 240, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
       <div style={{ position: "absolute", bottom: -50, left: -50, width: 200, height: 200, borderRadius: "50%", background: "rgba(255,255,255,0.04)" }} />
-      <div style={{ background: "rgba(255,255,255,0.18)", borderRadius: "24px", padding: "9px 22px", fontSize: "15px", fontWeight: "700", color: "rgba(255,255,255,0.9)", marginBottom: "26px", letterSpacing: "0.04em" }}>
+      {/* Character illustration */}
+      {Illust && (
+        <div style={{ marginBottom: "18px" }}>
+          <Illust size={150} />
+        </div>
+      )}
+      <div style={{ background: "rgba(255,255,255,0.18)", borderRadius: "24px", padding: "9px 22px", fontSize: "15px", fontWeight: "700", color: "rgba(255,255,255,0.9)", marginBottom: "18px", letterSpacing: "0.04em" }}>
         HACCP · Day {day}
       </div>
-      <h1 style={{ color: "white", fontSize: "34px", fontWeight: "900", textAlign: "center", lineHeight: 1.3, margin: "0 0 22px 0" }}>{title}</h1>
-      <p style={{ color: "rgba(255,255,255,0.78)", fontSize: "15px", textAlign: "center", lineHeight: 1.75, margin: "0 0 40px 0" }}>{summary}</p>
+      <h1 style={{ color: "white", fontSize: Illust ? "28px" : "34px", fontWeight: "900", textAlign: "center", lineHeight: 1.3, margin: "0 0 16px 0" }}>{title}</h1>
+      <p style={{ color: "rgba(255,255,255,0.78)", fontSize: "13px", textAlign: "center", lineHeight: 1.65, margin: "0 0 32px 0" }}>{summary}</p>
       <div style={{ position: "absolute", bottom: "22px", left: 0, right: 0, display: "flex", justifyContent: "center", gap: "10px", alignItems: "center" }}>
         <span style={{ color: "rgba(255,255,255,0.45)", fontSize: "12px" }}>🥗 HACCP 외국인 교육자료</span>
         {l && <span style={{ background: "rgba(255,255,255,0.15)", borderRadius: "10px", padding: "2px 10px", fontSize: "11px", color: "rgba(255,255,255,0.7)" }}>{l.flag} {l.label}</span>}
@@ -110,9 +122,9 @@ function HighlightSlide({ text, slideNum, total }) {
   );
 }
 
-function SlideRenderer({ slide, lang, slideNum, total }) {
+function SlideRenderer({ slide, lang, slideNum, total, slug }) {
   switch (slide.type) {
-    case "cover": return <CoverSlide title={slide.title} summary={slide.summary} day={slide.day} lang={lang} />;
+    case "cover": return <CoverSlide title={slide.title} summary={slide.summary} day={slide.day} lang={lang} slug={slug} />;
     case "content": return <ContentSlide heading={slide.heading} items={slide.items} slideNum={slideNum} total={total} />;
     case "highlight": return <HighlightSlide text={slide.text} slideNum={slideNum} total={total} />;
     default: return null;
@@ -204,7 +216,7 @@ export default function InstagramPage({ material }) {
       >
         {slides.map((slide, i) => (
           <div key={`capture-${lang}-${i}`} style={{ width: SLIDE_SIZE, height: SLIDE_SIZE }}>
-            <SlideRenderer slide={slide} lang={lang} slideNum={i + 1} total={slides.length} />
+            <SlideRenderer slide={slide} lang={lang} slideNum={i + 1} total={slides.length} slug={material.slug} />
           </div>
         ))}
       </div>
@@ -263,7 +275,7 @@ export default function InstagramPage({ material }) {
                 </div>
                 <div style={{ borderRadius: "10px", overflow: "hidden", boxShadow: "0 4px 16px rgba(0,0,0,0.4)" }}>
                   <SlidePreview captureRef={(el) => { previewRefs.current[i] = el; }}>
-                    <SlideRenderer slide={slide} lang={lang} slideNum={i + 1} total={slides.length} />
+                    <SlideRenderer slide={slide} lang={lang} slideNum={i + 1} total={slides.length} slug={material.slug} />
                   </SlidePreview>
                 </div>
               </div>
