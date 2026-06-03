@@ -118,8 +118,8 @@ export default function HaccpIndex() {
           </div>
         </header>
 
-        {/* Stats */}
-        <div style={{ background: "white", borderBottom: "1px solid #e2e8f0", padding: "14px 20px", display: "flex", justifyContent: "center", gap: "20px", flexWrap: "wrap" }}>
+        {/* Stats + Generate CTA */}
+        <div style={{ background: "white", borderBottom: "1px solid #e2e8f0", padding: "14px 20px", display: "flex", justifyContent: "center", gap: "20px", flexWrap: "wrap", alignItems: "center" }}>
           <span style={{ background: "#059669", color: "white", padding: "4px 14px", borderRadius: "14px", fontSize: "13px", fontWeight: "700" }}>
             ✓ {ui.freeBadge}
           </span>
@@ -129,6 +129,10 @@ export default function HaccpIndex() {
           <span style={{ color: "#64748b", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
             🌐 {ui.langSupport}: {LANGUAGES.map(l => l.flag).join(" ")}
           </span>
+          <Link href="/haccp/generate"
+            style={{ background: "linear-gradient(135deg,#1d4ed8,#059669)", color: "white", padding: "6px 18px", borderRadius: "14px", fontSize: "13px", fontWeight: "700" }}>
+            ✨ AI 자동 생성
+          </Link>
         </div>
 
         {/* Materials Grid */}
