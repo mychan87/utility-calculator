@@ -2,11 +2,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Head from "next/head";
 import { materials, LANGUAGES } from "../../data/materials";
-import dynamic from "next/dynamic";
-
-const ILLUSTRATIONS = {
-  "personal-hygiene": dynamic(() => import("../../components/illustrations/PersonalHygiene"), { ssr: false }),
-};
+import IllustrationLoader from "../../components/IllustrationLoader";
 
 const UI_TEXT = {
   ko: {
@@ -189,14 +185,9 @@ function MaterialCard({ material: m, lang, ui }) {
       {/* Card top color bar */}
       <div style={{ background: "linear-gradient(135deg, #1e40af, #065f46)", padding: "22px 20px", color: "white", position: "relative", overflow: "hidden", minHeight: "110px" }}>
         {/* Webtoon illustration */}
-        {ILLUSTRATIONS[m.slug] && (() => {
-          const Illust = ILLUSTRATIONS[m.slug];
-          return (
-            <div style={{ position: "absolute", right: "-8px", bottom: "-8px", opacity: 0.92, pointerEvents: "none" }}>
-              <Illust size={100} />
-            </div>
-          );
-        })()}
+        <div style={{ position: "absolute", right: "-8px", bottom: "-8px", opacity: 0.92, pointerEvents: "none" }}>
+          <IllustrationLoader slug={m.slug} size={100} />
+        </div>
         <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px", position: "relative" }}>
           <span style={{ background: "rgba(255,255,255,0.22)", borderRadius: "8px", padding: "3px 10px", fontSize: "12px", fontWeight: "700" }}>
             {ui.dayLabel} {m.day}

@@ -2,12 +2,8 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { materials, LANGUAGES } from "../../../data/materials";
-
-const ILLUSTRATIONS = {
-  "personal-hygiene": dynamic(() => import("../../../components/illustrations/PersonalHygiene"), { ssr: false }),
-};
+import IllustrationLoader from "../../../components/IllustrationLoader";
 
 export async function getStaticPaths() {
   return {
@@ -47,21 +43,18 @@ function buildSlides(content, title, summary, day) {
 
 function CoverSlide({ title, summary, day, lang, slug }) {
   const l = LANGUAGES.find((x) => x.code === lang);
-  const Illust = ILLUSTRATIONS[slug];
   return (
     <div style={{ width: SLIDE_SIZE, height: SLIDE_SIZE, background: "linear-gradient(145deg,#1e3a8a 0%,#065f46 100%)", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: "52px 48px", boxSizing: "border-box", position: "relative", overflow: "hidden", fontFamily: "system-ui,sans-serif" }}>
       <div style={{ position: "absolute", top: -70, right: -70, width: 240, height: 240, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
       <div style={{ position: "absolute", bottom: -50, left: -50, width: 200, height: 200, borderRadius: "50%", background: "rgba(255,255,255,0.04)" }} />
       {/* Character illustration */}
-      {Illust && (
-        <div style={{ marginBottom: "18px" }}>
-          <Illust size={150} />
-        </div>
-      )}
+      <div style={{ marginBottom: "18px" }}>
+        <IllustrationLoader slug={slug} size={150} />
+      </div>
       <div style={{ background: "rgba(255,255,255,0.18)", borderRadius: "24px", padding: "9px 22px", fontSize: "15px", fontWeight: "700", color: "rgba(255,255,255,0.9)", marginBottom: "18px", letterSpacing: "0.04em" }}>
         HACCP · Day {day}
       </div>
-      <h1 style={{ color: "white", fontSize: Illust ? "28px" : "34px", fontWeight: "900", textAlign: "center", lineHeight: 1.3, margin: "0 0 16px 0" }}>{title}</h1>
+      <h1 style={{ color: "white", fontSize: "28px", fontWeight: "900", textAlign: "center", lineHeight: 1.3, margin: "0 0 16px 0" }}>{title}</h1>
       <p style={{ color: "rgba(255,255,255,0.78)", fontSize: "13px", textAlign: "center", lineHeight: 1.65, margin: "0 0 32px 0" }}>{summary}</p>
       <div style={{ position: "absolute", bottom: "22px", left: 0, right: 0, display: "flex", justifyContent: "center", gap: "10px", alignItems: "center" }}>
         <span style={{ color: "rgba(255,255,255,0.45)", fontSize: "12px" }}>🥗 HACCP 외국인 교육자료</span>

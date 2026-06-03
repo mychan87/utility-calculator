@@ -2,12 +2,8 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { materials, LANGUAGES } from "../../data/materials";
-
-const ILLUSTRATIONS = {
-  "personal-hygiene": dynamic(() => import("../../components/illustrations/PersonalHygiene"), { ssr: false }),
-};
+import IllustrationLoader from "../../components/IllustrationLoader";
 
 export async function getStaticPaths() {
   const paths = materials.map((m) => ({ params: { slug: m.slug } }));
@@ -175,14 +171,9 @@ export default function MaterialPage({ material }) {
               }}
             >
               {/* Webtoon illustration */}
-              {ILLUSTRATIONS[material.slug] && (() => {
-                const Illust = ILLUSTRATIONS[material.slug];
-                return (
-                  <div style={{ position: "absolute", right: "24px", bottom: "-8px", opacity: 0.9, pointerEvents: "none" }} className="no-print">
-                    <Illust size={130} />
-                  </div>
-                );
-              })()}
+              <div style={{ position: "absolute", right: "24px", bottom: "-8px", opacity: 0.9, pointerEvents: "none" }} className="no-print">
+                <IllustrationLoader slug={material.slug} size={130} />
+              </div>
               <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
                 <span
                   style={{
