@@ -105,6 +105,22 @@ export default function MaterialPage({ material }) {
             >
               📄 PDF로 저장 / 인쇄
             </button>
+            <Link
+              href={`/haccp/instagram/${material.slug}?lang=${lang}`}
+              style={{
+                padding: "12px 24px",
+                background: "linear-gradient(135deg, #7c3aed, #db2777)",
+                color: "white",
+                borderRadius: "12px",
+                fontWeight: "700",
+                fontSize: "15px",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              📸 Instagram 카드
+            </Link>
             {material.youtubeId && (
               <a
                 href={`https://www.youtube.com/watch?v=${material.youtubeId}`}
