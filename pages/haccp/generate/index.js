@@ -238,19 +238,30 @@ export default function GeneratePage() {
   // Post to Instagram
   const postToInstagram = useCallback(async () => {
     if (!captureRef.current || !material) return;
+    // Check for credentials in localStorage (set via /haccp/instagram-setup)
+    const localToken = localStorage.getItem("ig_access_token");
+    const localAccountId = localStorage.getItem("ig_account_id");
+    if (!localToken || !localAccountId) {
+      setInstaStatus("⚠️ Instagram 계정 설정이 필요합니다.");
+      window.open("/haccp/instagram-setup", "_blank");
+      return;
+    }
     setDlState((s) => ({ ...s, insta: true }));
     setInstaStatus("이미지 생성 중...");
     try {
       const html2canvas = (await import("html2canvas")).default;
       const canvas = await html2canvas(captureRef.current.children[0], { scale: 2, useCORS: true, backgroundColor: null });
-      const blob = await new Promise((r) => canvas.toBlob(r, "image/png"));
-      // Upload to a public URL — requires NEXT_PUBLIC_SITE_URL + file upload endpoint
       setInstaStatus("Instagram API 호출 중...");
-      const caption = `${material.title.ko}\n\n${material.summary.ko}\n\n#HACCP #식품안전 #외국인근로자`;
+      const caption = `${material.title.ko}\n\n${material.summary.ko}\n\n#HACCP #식품안전 #외국인근로자 #haccp #foodsafety`;
       const res = await fetch("/api/haccp/instagram-post", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageUrl: canvas.toDataURL("image/png"), caption }),
+        body: JSON.stringify({
+          imageUrl: canvas.toDataURL("image/png"),
+          caption,
+          accessToken: localToken,
+          accountId: localAccountId,
+        }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || json.setup || "실패");

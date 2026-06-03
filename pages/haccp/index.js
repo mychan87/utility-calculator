@@ -133,6 +133,10 @@ export default function HaccpIndex() {
             style={{ background: "linear-gradient(135deg,#1d4ed8,#059669)", color: "white", padding: "6px 18px", borderRadius: "14px", fontSize: "13px", fontWeight: "700" }}>
             ✨ AI 자동 생성
           </Link>
+          <Link href="/haccp/instagram-setup"
+            style={{ background: "linear-gradient(135deg,#7c3aed,#db2777)", color: "white", padding: "6px 18px", borderRadius: "14px", fontSize: "13px", fontWeight: "700" }}>
+            📸 Instagram 설정
+          </Link>
         </div>
 
         {/* Materials Grid */}

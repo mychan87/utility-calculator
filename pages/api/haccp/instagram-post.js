@@ -7,14 +7,15 @@
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
 
-  const { imageUrl, caption } = req.body;
-  const token = process.env.INSTAGRAM_ACCESS_TOKEN;
-  const accountId = process.env.INSTAGRAM_BUSINESS_ACCOUNT_ID;
+  const { imageUrl, caption, accessToken: bodyToken, accountId: bodyAccountId } = req.body;
+  // Prefer credentials passed from client (localStorage), fall back to env vars
+  const token = bodyToken || process.env.INSTAGRAM_ACCESS_TOKEN;
+  const accountId = bodyAccountId || process.env.INSTAGRAM_BUSINESS_ACCOUNT_ID;
 
   if (!token || !accountId) {
     return res.status(503).json({
-      error: "Instagram API not configured",
-      setup: "Set INSTAGRAM_ACCESS_TOKEN and INSTAGRAM_BUSINESS_ACCOUNT_ID in environment variables.",
+      error: "Instagram 계정 설정이 필요합니다.",
+      setup: "/haccp/instagram-setup 페이지에서 토큰과 계정 ID를 설정해 주세요.",
     });
   }
 
